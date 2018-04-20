@@ -42,12 +42,23 @@ def nocache(view):
 def home():
     return page('home')
 
+# Log files
+@nocache
+@app.route('/logs/<string:log_type>/<string:log_name>')
+def logs(log_type, log_name):
+    file_path = '/var/log/smartem/%s/%s.log' % (log_type, log_name)
+    response = make_response(open(file_path).read())
+    response.headers["Content-type"] = "text/plain"
+    return response
+
+
 # Specific page
 @app.route('/<string:page_name>')
 @nocache
 def page(page_name):
     # Let Flask/Jinja2 render the page
     return render_template('%s%s' % (page_name, '.html'))
+
 
 
 if __name__ == '__main__':
